@@ -78,7 +78,7 @@ rsync -av --progress  ${artifact_dir}/k3s-airgap-images-amd64.tar /var/lib/ranch
 
 install_k3s_server() {
 host_ip=$(ip a s ${k3s_interface} | egrep -o 'inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | cut -d' ' -f2)
-INSTALL_K3S_SKIP_SELINUX_RPM=true INSTALL_K3S_SKIP_DOWNLOAD=true INSTALL_K3S_EXEC="--debug --write-kubeconfig-mode 664 --disable traefik,servicelb,metrics-server,cloud-controller --flannel-iface ${k3s_interface} --node-ip ${host_ip} --advertise-address ${host_ip} --kube-apiserver-arg kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP" ${artifact_dir}/k3s-install.sh
+INSTALL_K3S_SKIP_SELINUX_RPM=true INSTALL_K3S_SKIP_DOWNLOAD=true INSTALL_K3S_EXEC="--debug --write-kubeconfig-mode 664 --disable traefik --flannel-iface ${k3s_interface} --node-ip ${host_ip} --advertise-address ${host_ip} --kube-apiserver-arg kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP" ${artifact_dir}/k3s-install.sh
 }
 
 install_k3s_agent() {
