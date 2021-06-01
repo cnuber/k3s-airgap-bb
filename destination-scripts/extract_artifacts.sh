@@ -1,3 +1,3 @@
 #!/bin/bash
-incoming_dir="/tmp"
-sudo tar -xzvf /tmp/artifacts-airgap.tar.gz -C /
+incoming_dir="/root"
+sudo tar -xzvf ${incoming_dir}/artifacts-airgap.tar.gz -C /

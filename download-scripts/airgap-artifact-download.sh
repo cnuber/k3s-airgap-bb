@@ -18,11 +18,14 @@ architecture="amd64" # amd64,arm,arm64, armhf supported
 bigbang_version="1.5.0"
 registry1_url="registry1.dso.mil"
 
+# install utilities needed by download script
+
+yum install git yum-utils -y
+
 # download pre-req RPMs
 
 mkdir -p ${artifact_dir}/rpms
-yumdownloader --resolve --destdir=${artifact_dir}/rpms/ container-selinux selinux-policy-base iscsi-initiator-utils git
-rpm -Uvh ${artifact_dir}/rpms/*.rpm
+yumdownloader --resolve --destdir=${artifact_dir}/rpms/ container-selinux selinux-policy-base iscsi-initiator-utils
 
 # download k3s binary
 curl -L https://github.com/k3s-io/k3s/releases/download/${k3s_version}/k3s --output ${artifact_dir}/k3s
@@ -128,4 +131,4 @@ else
   echo "skipping ironbank image downloads as -i flag not set as true"
 fi
 
-tar -czvf /vagrant/artifacts-airgap.tar.gz ${artifact_dir}
+tar -czvf ~/artifacts-airgap.tar.gz ${artifact_dir}
