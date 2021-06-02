@@ -23,11 +23,11 @@ You then will need to transfer this to the destination system somehow (scp, rsyn
 
 ### Extracting the archive on the destination system
 
-If you've transferred the archive to a destination other than /root, you will want to edit the "incoming_dir" variable in destination-scripts/extract_artifacts.sh with the correct directory.
+Once you've transferred the artifacts-airgap.tar.gz file to the destination system, you'll need to extract it with the following command:
 
 Run the extract_artifacts.sh script
 ```
-destination-scripts/extract_artifacts.sh
+tar -xzvf artifacts-airgap.tar.gz -C /
 ```
 
 ### Deploying an airgapped k3s installation with the necessary OS dependencies
@@ -36,12 +36,14 @@ For a server node:
 
 Replace interfacename in the command below with your actual network interface name (ie eth0, ens33, etc..)
 ```
+cd /opt/artifacts/deployment
 destination-scripts/deploy_k3s.sh -i interfacename -n server
 ```
 
 For an agent node:
 In addition to the interface name and node type, you will also need to pass the k3s server url and the k3s join token as follows:
 ```
+cd /opt/artifacts/deployment
 destination-scripts/deploy_k3s.sh -i interfacename -n agent -s https://your.k3s.server.ip:6443 -t yourk3sservernodetoken
 ```
 
@@ -52,5 +54,6 @@ watch kubectl get pods -A # this should return running pods after a couple of mi
 ```
 ### Deploying Big Bang and the necessary IronBank images in an airgap
 ```
+cd /opt/artifacts/deployment
 destination-scripts/deploy_bigbang.sh
 ```
