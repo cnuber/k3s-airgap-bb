@@ -22,6 +22,7 @@ artifact_dir="/opt/artifacts"
 
 configure_os() {
   setenforce Permissive
+  sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
   cat << EOF > /etc/sysctl.d/k3s.conf
   net.ipv4.ip_local_port_range = 15000 61000
   fs.file-max = 12000500
