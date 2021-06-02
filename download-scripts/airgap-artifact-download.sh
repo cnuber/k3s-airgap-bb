@@ -51,7 +51,7 @@ curl -L https://repo1.dso.mil/platform-one/big-bang/bigbang/-/raw/${bigbang_vers
 # Download bigbang repository
 
 curl -L https://repo1.dso.mil/platform-one/big-bang/bigbang/-/archive/${bigbang_version}/bigbang-${bigbang_version}.tar.gz | tar -xzvf - -C ${artifact_dir}/
-tar -czvf ${artifact_dir}/bigbang.tgz ${artifact_dir}/bigbang-${bigbang_version}/chart
+tar -czvf ${artifact_dir}/bigbang-1.5.0.tgz -C bigbang-1.5.0/chart/
 
 # Copy flux manifest
 
