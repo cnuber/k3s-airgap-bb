@@ -18,6 +18,10 @@ architecture="amd64" # amd64,arm,arm64, armhf supported
 bigbang_version="1.5.0"
 registry1_url="registry1.dso.mil"
 
+# copy destination scripts to artifacts dir
+mkdir -p ${artifact_dir}/deployment
+cp -r artifacts destination-scripts ${artifact_dir}/deployment/
+
 # install utilities needed by download script
 
 yum install git yum-utils -y
