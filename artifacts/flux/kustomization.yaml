@@ -1,0 +1,5 @@
+namespace: flux-system
+resources:
+- flux.yaml
+patchesStrategicMerge:
+- flux-edge-mods.yaml

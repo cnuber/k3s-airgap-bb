@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: git-http-backend
+  namespace: git
+spec:
+  template:
+    spec:
+      containers:
+      - name: git-http-backend
+        resources:
+          requests:
+            cpu: 100m
+            memory: 96Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+      volumes:
+      - hostPath:
+          path: /opt/git
+          type: DirectoryOrCreate
+        name: gitvol
