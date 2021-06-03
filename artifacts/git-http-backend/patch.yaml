@@ -18,6 +18,6 @@ spec:
             memory: 512Mi
       volumes:
       - hostPath:
-          path: /opt/git
+          path: /opt/artifacts/git
           type: DirectoryOrCreate
         name: gitvol

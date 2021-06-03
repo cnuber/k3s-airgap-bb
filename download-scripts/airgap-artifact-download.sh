@@ -15,7 +15,7 @@ artifact_dir="/opt/artifacts"
 k3s_artifacts() {
 k3s_version="v1.21.1+k3s1" # choose your version from https://github.com/k3s-io/k3s/releases
 architecture="amd64" # amd64,arm,arm64, armhf supported
-bigbang_version="1.5.0"
+bigbang_version="1.8.0"
 registry1_url="registry1.dso.mil"
 
 # copy destination scripts to artifacts dir
@@ -50,12 +50,12 @@ bigbang_artifacts() {
 
 # Download flux manifest
 
-curl -L https://repo1.dso.mil/platform-one/big-bang/bigbang/-/raw/${bigbang_version}/scripts/deploy/flux.yaml --output ${artifact_dir}/flux.yaml
+curl -L https://repo1.dso.mil/platform-one/big-bang/bigbang/-/raw/${bigbang_version}/scripts/deploy/flux.yaml --output artifacts/flux/flux.yaml
 
 # Download bigbang repository
 
 curl -L https://repo1.dso.mil/platform-one/big-bang/bigbang/-/archive/${bigbang_version}/bigbang-${bigbang_version}.tar.gz | tar -xzvf - -C ${artifact_dir}/
-tar -czvf ${artifact_dir}/bigbang-1.5.0.tgz -C ${artifact_dir}/bigbang-1.5.0/chart/
+tar -czvf ${artifact_dir}/bigbang-${bigbang_version}.tgz -C ${artifact_dir}/bigbang-${bigbang_version}/chart/ .
 
 # Copy flux manifest
 
@@ -90,26 +90,32 @@ for fluximage in $(grep "image: registry1" ${artifact_dir}/flux.yaml  |awk '{pri
 done
 
 ibImages=(
-opensource/openpolicyagent/gatekeeper:v3.1.2
-opensource/istio/operator:1.7.3
-opensource/istio/pilot:1.7.3
-opensource/jaegertracing/all-in-one:1.19.2
-opensource/istio-1.7/proxyv2-1.7:1.7.7
-opensource/kiali/kiali:v1.23.0
-opensource/coreos/kube-state-metrics:v1.9.7
-opensource/prometheus/node-exporter:v1.0.1
-opensource/jet/kube-webhook-certgen:v1.5.1
-opensource/coreos/prometheus-operator:v0.42.1
-opensource/jimmidyson/configmap-reload:v0.4.0
-opensource/coreos/prometheus-config-reloader:v0.42.1
-opensource/kubernetes-1.19/kubectl-1.19:latest
-opensource/prometheus/prometheus:v2.22.0
-opensource/grafana/grafana:7.1.3-1
-opensource/fluent/fluent-bit:1.7.2
-elastic/kibana/kibana:7.9.2
-elastic/eck-operator/eck-operator:1.3.0
-elastic/elasticsearch/elasticsearch:7.9.2
+elastic/eck-operator/eck-operator:1.4.0
+elastic/elasticsearch/elasticsearch:7.10.0
+elastic/kibana/kibana:7.10.2
+fluxcd/helm-controller:v0.9.0
+fluxcd/kustomize-controller:v0.9.3
+fluxcd/notification-controller:v0.12.0
+fluxcd/source-controller:v0.9.1
 kiwigrid/k8s-sidecar:1.3.0
+opensource/coreos/kube-state-metrics:v1.9.7
+opensource/coreos/prometheus-config-reloader:v0.42.1
+opensource/coreos/prometheus-operator:v0.42.1
+opensource/fluent/fluent-bit:1.7.4
+opensource/grafana/grafana:7.1.3-1
+opensource/istio-1.8/operator:1.8.4
+opensource/istio-1.8/pilot:1.8.4
+opensource/istio-1.8/proxyv2:1.8.4
+opensource/jaegertracing/all-in-one:1.22.0
+opensource/jaegertracing/jaeger-operator:1.22.0
+opensource/jet/kube-webhook-certgen:v1.5.1
+opensource/jimmidyson/configmap-reload:v0.4.0
+opensource/kiali/kiali-operator:v1.32.0
+opensource/kiali/kiali:v1.32.0
+opensource/prometheus/alertmanager:v0.21.0
+opensource/prometheus/node-exporter:v1.0.1
+opensource/prometheus/prometheus:v2.22.0
+opensource/kubernetes-1.19/kubectl-1.19:latest
 )
 
 for image in ${ibImages[@]} ; do

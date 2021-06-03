@@ -2,7 +2,7 @@
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 WAIT_TIMEOUT=120
 k3s_root_dir=/var/lib/rancher/k3s
-bigbang_version=1.5.0
+bigbang_version=1.8.0
 git_mirror_url=http://git-http-backend.git.svc.cluster.local/git
 artifact_dir="/opt/artifacts"
 
@@ -46,7 +46,6 @@ spec:
       enabled: true
       git:
         repo: ${git_mirror_url}/istio-controlplane
-        tag: 1.7.3-bb.14
       values:
         imagePullPolicy: Never
     istiooperator:
@@ -58,7 +57,7 @@ spec:
     clusterAuditor:
       enabled: false
     logging:
-      enabled: true
+      enabled: false
       repo: ${git_mirror_url}/logging
       values:
         kibana:
@@ -112,7 +111,7 @@ spec:
     eckoperator:
       enabled: false
     monitoring:
-      enabled: true
+      enabled: false
       git:
         repo: ${git_mirror_url}/monitoring
       values:
@@ -138,7 +137,7 @@ spec:
                 cpu: 100m
                 memory: 100Mi
         prometheusOperator:
-          enabled: true
+          enabled: false
           resources:
             limits:
               cpu: 200m
@@ -148,9 +147,13 @@ spec:
               memory: 100Mi
         kubeEtcd:
           enabled: false
-    twistlock:
-      enabled: false
     gatekeeper:
+      enabled: false
+    jaeger:
+      enabled: false
+    kiali:
+      enabled: false
+    twistlock:
       enabled: false
 EOF
 }
