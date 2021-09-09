@@ -1,4 +1,4 @@
-bigbang_version=1.8.0
+bigbang_version=1.15.2
 
 rm /var/lib/rancher/k3s/server/manifests/bigbang.yaml
 rm /var/lib/rancher/k3s/server/manifests/flux-deploy.yaml

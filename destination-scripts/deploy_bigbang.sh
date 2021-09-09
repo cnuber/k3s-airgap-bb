@@ -1,14 +1,20 @@
 #!/bin/bash
 
-while getopts n: flag
+while getopts b:n: flag
 do
     case "${flag}" in
+      b) bigbang_version=${OPTARG};;
       n) nodetype=${OPTARG};;
     esac
 done
 
 if [[ -z "$nodetype" ]] ; then
   echo "You must specify a nodetype of server or agent with the -n flag"
+  exit 1
+fi
+
+if [[ -z "$bigbang_version" ]] ; then
+  echo "You must specify the Big Bang version  with the -b flag"
   exit 1
 fi
 
