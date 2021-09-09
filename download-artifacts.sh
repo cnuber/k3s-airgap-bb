@@ -82,8 +82,8 @@ curl -L https://repo1.dso.mil/platform-one/big\-bang/bigbang/\-/archive/${bigban
 curl -L https://umbrella-bigbang-releases.s3-us-gov-west-1.amazonaws.com/umbrella/${bigbang_version}/repositories.tar.gz | tar -xz -C ${artifact_dir}/git/
 
 # Istio version workaround
-git --git-dir=${artifact_dir}/git/repos/istio-controlplane/.git reset HEAD --hard
-git --git-dir=${artifact_dir}/git/repos/istio-controlplane/.git checkout tags/1.9.8-bb.0
+#git --git-dir=${artifact_dir}/git/repos/istio-controlplane/.git reset HEAD --hard
+#git --git-dir=${artifact_dir}/git/repos/istio-controlplane/.git checkout tags/1.9.8-bb.0
 
 # copy flux manifest
 
