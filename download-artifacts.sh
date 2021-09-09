@@ -110,7 +110,7 @@ mkdir -p ${artifact_dir}/rpms
 yumdownloader --resolve --destdir=${artifact_dir}/rpms/ container-selinux selinux-policy-base iscsi-initiator-utils
 
 # copy deployment scripts
-cp -rf deploy ${artifact_dir}/deploy
+cp -rf destination-scripts ${artifact_dir}/deploy
 
 }
 
