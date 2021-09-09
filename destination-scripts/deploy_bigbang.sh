@@ -30,14 +30,13 @@ cp ${artifact_dir}/images/*.tar /var/lib/rancher/k3s/agent/images/
 }
 
 deployGitServer() {
-/usr/local/bin/kubectl apply -k artifacts/git-http-backend
+/usr/local/bin/kubectl apply -k ${artifact_dir}/git-http-backend
 /usr/local/bin/kubectl wait --for=condition=available --timeout "${WAIT_TIMEOUT}s" -n "git" "deployment/git-http-backend"
 }
 
 deployFlux() {
 /usr/local/bin/kubectl get ns flux-system || /usr/local/bin/k3s kubectl create ns flux-system
-/usr/local/bin/kubectl kustomize artifacts/flux > artifacts/flux/flux-deploy.yaml # transform flux manifest with edge settings
-cp artifacts/flux/flux-deploy.yaml ${k3s_root_dir}/server/manifests/flux-deploy.yaml
+cp ${artifact_dir}/flux.yaml ${k3s_root_dir}/server/manifests/flux.yaml
 sleep 30
 /usr/local/bin/kubectl wait --for=condition=available --timeout "${WAIT_TIMEOUT}s" -n "flux-system" "deployment/helm-controller"
 /usr/local/bin/kubectl wait --for=condition=available --timeout "${WAIT_TIMEOUT}s" -n "flux-system" "deployment/source-controller"
