@@ -13,7 +13,7 @@ On the internet-connected system:
 cd k3s-airgap-bb
 
 # For an airgapped k3s with Big Bang and Iron Bank artifacts.  Flags -b (bigbang_version) -k (k3s_version) -u (ironbank username) -p (ironbank cli_token)
-sudo sh download-artifacts.sh -b 1.15.2 -k 1.21.4+k3s1 -u Your_IronBank_Username -p YourIronBankPassword # you can retrieve these credentials from https://registry1.dso.mil under your user profile (username and cli_token for the password)
+sudo sh download-artifacts.sh -b 1.15.2 -k v1.21.4+k3s1 -u Your_IronBank_Username -p YourIronBankPassword # you can retrieve these credentials from https://registry1.dso.mil under your user profile (username and cli_token for the password)
 ```
 
 This will create an archive with all of the items needed in your user's home directory, ie /root/artifacts-airgap.tar.gz
