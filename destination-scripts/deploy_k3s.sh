@@ -20,6 +20,11 @@ fi
 
 artifact_dir="/opt/artifacts"
 
+systemctl start iptables
+systemctl enable iptables
+iptables --flush
+service iptables save
+
 configure_os() {
   setenforce Permissive
   sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
@@ -32,9 +37,9 @@ configure_os() {
   net.core.wmem_max=8388608
   net.core.rmem_default=65536
   net.core.wmem_default=65536
-  net.ipv4.tcp_rmem='4096 87380 8388608'
-  net.ipv4.tcp_wmem='4096 65536 8388608'
-  net.ipv4.tcp_mem='8388608 8388608 8388608'
+  # net.ipv4.tcp_rmem='4096 87380 8388608'
+  # net.ipv4.tcp_wmem='4096 65536 8388608'
+  # net.ipv4.tcp_mem='8388608 8388608 8388608'
   net.ipv4.route.flush=1
   net.ipv4.ip_forward=1
   net.ipv4.conf.default.rp_filter=1
@@ -44,6 +49,9 @@ EOF
   sysctl --system
   systemctl stop firewalld
   systemctl disable firewalld
+  systemctl stop NetworkManager
+  systemctl disable NetworkManager
+  
 
 # open necessary k3s ports
 
@@ -57,7 +65,7 @@ EOF
 # install pre-requisite packages/etc.  For true air-gap will need to consider downloading these rpms locally in the future.
 
 install_prereqs() {
-  yum localinstall ${artifact_dir}/rpms/*.rpm --disablerepo=* -y
+  yum localinstall ${artifact_dir}/rpms/*.rpm --disablerepo=* -y --nogpgcheck
 }
 
 precreate_dirs() {
@@ -80,6 +88,8 @@ rsync -av --progress  ${artifact_dir}/k3s-airgap-images-amd64.tar /var/lib/ranch
 install_k3s_server() {
 host_ip=$(ip a s ${k3s_interface} | egrep -o 'inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | cut -d' ' -f2)
 INSTALL_K3S_SKIP_SELINUX_RPM=true INSTALL_K3S_SKIP_DOWNLOAD=true INSTALL_K3S_EXEC="--debug --write-kubeconfig-mode 664 --disable traefik --flannel-iface ${k3s_interface} --node-ip ${host_ip} --advertise-address ${host_ip} --kube-apiserver-arg kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP" ${artifact_dir}/k3s-install.sh
+
+cat /var/lib/rancher/k3s/server/node-token &> ~/node-token.new
 }
 
 install_k3s_agent() {

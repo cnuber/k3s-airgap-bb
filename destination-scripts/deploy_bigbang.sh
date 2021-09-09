@@ -1,13 +1,26 @@
 #!/bin/bash
+
+while getopts n: flag
+do
+    case "${flag}" in
+      n) nodetype=${OPTARG};;
+    esac
+done
+
+if [[ -z "$nodetype" ]] ; then
+  echo "You must specify a nodetype of server or agent with the -n flag"
+  exit 1
+fi
+
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 WAIT_TIMEOUT=120
 k3s_root_dir=/var/lib/rancher/k3s
-bigbang_version=1.8.0
+bigbang_version=1.15.2
 git_mirror_url=http://git-http-backend.git.svc.cluster.local/git
 artifact_dir="/opt/artifacts"
 
 loadIronBankImages() {
-cp ${artifact_dir}/images/*.tar /var/lib/rancher/k3s/agent/images/ && systemctl restart k3s
+cp ${artifact_dir}/images/*.tar /var/lib/rancher/k3s/agent/images/
 }
 
 deployGitServer() {
@@ -39,9 +52,12 @@ spec:
   chart: https://%{KUBERNETES_API}%/static/charts/bigbang-${bigbang_version}.tgz
   valuesContent: |-
     fluentbit:
-      enabled: false
+      enabled: true
       git:
         repo: ${git_mirror_url}/fluentbit
+      values:
+        image:
+          pullPolicy: Never
     istio:
       enabled: true
       git:
@@ -57,8 +73,9 @@ spec:
     clusterAuditor:
       enabled: false
     logging:
-      enabled: false
-      repo: ${git_mirror_url}/logging
+      enabled: true
+      git:
+        repo: ${git_mirror_url}/elasticsearch-kibana
       values:
         kibana:
           count: 1
@@ -109,9 +126,11 @@ spec:
               runAsGroup: 1000
               fsGroup: 1000
     eckoperator:
-      enabled: false
+      enabled: true
+      git:
+        repo: ${git_mirror_url}/eck-operator
     monitoring:
-      enabled: false
+      enabled: true
       git:
         repo: ${git_mirror_url}/monitoring
       values:
@@ -131,13 +150,13 @@ spec:
           prometheusSpec:
             resources:
               limits:
-                cpu: 200m
-                memory: 200Mi
+                cpu: 300m
+                memory: 300mi
               requests:
-                cpu: 100m
-                memory: 100Mi
+                cpu: 200m
+                memory: 200mi
         prometheusOperator:
-          enabled: false
+          enabled: true
           resources:
             limits:
               cpu: 200m
@@ -152,13 +171,23 @@ spec:
     jaeger:
       enabled: false
     kiali:
-      enabled: false
+      enabled: true
+      git:
+        repo: ${git_mirror_url}/kiali
+      values:
+        cr:
+          create: true
     twistlock:
       enabled: false
 EOF
 }
 
 loadIronBankImages
-deployGitServer
-deployFlux
-deployBB
+if [[ "$nodetype" == "server" ]]; then
+  systemctl restart k3s
+  deployGitServer
+  deployFlux
+  deployBB
+else
+  systemctl restart k3s-agent
+fi
