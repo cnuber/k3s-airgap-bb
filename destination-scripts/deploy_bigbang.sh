@@ -21,7 +21,7 @@ fi
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 WAIT_TIMEOUT=120
 k3s_root_dir=/var/lib/rancher/k3s
-bigbang_version=1.15.2
+bigbang_version=1.25.0
 git_mirror_url=http://git-http-backend.git.svc.cluster.local/git
 artifact_dir="/opt/artifacts"
 
@@ -56,134 +56,184 @@ metadata:
 spec:
   chart: https://%{KUBERNETES_API}%/static/charts/bigbang-${bigbang_version}.tgz
   valuesContent: |-
-    fluentbit:
-      enabled: true
-      git:
-        repo: ${git_mirror_url}/fluentbit
-      values:
-        image:
-          pullPolicy: Never
-    istio:
-      enabled: true
-      git:
-        repo: ${git_mirror_url}/istio-controlplane
-      values:
-        imagePullPolicy: Never
-    istiooperator:
-      enabled: true
-      git:
-        repo: ${git_mirror_url}/istio-operator
-      values:
-        imagePullPolicy: Never
-    clusterAuditor:
-      enabled: false
-    logging:
-      enabled: true
-      git:
-        repo: ${git_mirror_url}/elasticsearch-kibana
-      values:
-        kibana:
-          count: 1
-          resources:
-            requests:
-              cpu: 100m
-              memory: 96Mi
-            limits:
-              cpu: 1000m
-              memory: 512Mi
-            securityContext:
-              runAsUser: 1000
-              runAsGroup: 1000
-              fsGroup: 1000
-        elasticsearch:
-          data:
-            heap:
-              min: 512m
-              max: 512m
-            count: 1
-            resources:
-              requests:
-                cpu: 100m
-                memory: 96Mi
-              limits:
-                cpu: 1000m
-                memory: 512Mi
-            persistence:
-              size: 10Gi
-            securityContext: 
-              runAsUser: 1000
-              runAsGroup: 1000
-              fsGroup: 1000
-          master:
-            heap:
-              min: 512m
-              max: 512m
-            count: 1
-            resources:
-              requests:
-                cpu: 100m
-                memory: 96Mi
-              limits:
-                cpu: 1000m
-                memory: 512Mi
-            securityContext:
-              runAsUser: 1000
-              runAsGroup: 1000
-              fsGroup: 1000
-    eckoperator:
-      enabled: true
-      git:
-        repo: ${git_mirror_url}/eck-operator
-    monitoring:
-      enabled: true
-      git:
-        repo: ${git_mirror_url}/monitoring
-      values:
+        domain: bigbang.dev
+        offline: true
+        flux:
+          timeout: 10m
+          interval: 2m
+          test:
+            enable: false
+          install:
+            remediation:
+              retries: -1
+          upgrade:
+            remediation:
+              retries: 3
+              remediateLastFailure: true
+            cleanupOnFail: true
+          rollback:
+            timeout: 10m
+            cleanupOnFail: true
+        networkPolicies:
+          enabled: false
+        imagePullPolicy: IfNotPresent
+
         istio:
-          alertmanager:
+          enabled: true
+          git:
+            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/istio-controlplane.git
+            path: "./chart"
+            tag: "1.11.3-bb.1"
+          ingressGateways:
+            public-ingressgateway:
+              type: "NodePort" # or "NodePort"
+              kubernetesResourceSpec: {} # https://istio.io/latest/docs/reference/config/istio.operator.v1alpha1/#KubernetesResourcesSpec
+
+          gateways:
+            public:
+              ingressGateway: "public-ingressgateway"
+              hosts:
+              - "*.{{ .Values.domain }}"
+              autoHttpRedirect:
+                enabled: true
+              tls:
+                key: ""
+                cert: ""
+
+        istiooperator:
+          enabled: true
+          git:
+            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/istio-operator.git
+            path: "./chart"
+            tag: "1.11.3-bb.2"
+
+        jaeger:
+          enabled: true
+          git:
+            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/jaeger.git
+            path: "./chart"
+            tag: "2.27.0-bb.2"
+          flux:
+            install:
+              crds: CreateReplace
+            upgrade:
+              crds: CreateReplace
+          ingress:
+            gateway: ""
+
+        kiali:
+          enabled: true
+          git:
+            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/kiali.git
+            path: "./chart"
+            tag: "1.44.0-bb.1"
+
+          flux: {}
+
+          ingress:
+            gateway: ""
+
+        clusterAuditor:
+          enabled: false
+          git:
+            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/cluster-auditor.git
+            path: "./chart"
+            tag: "1.0.2-bb.0"
+
+        gatekeeper:
+          enabled: false
+          git:
+            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/policy.git
+            path: "./chart"
+            tag: "3.6.0-bb.2"
+          flux:
+            install:
+              crds: CreateReplace
+            upgrade:
+              crds: CreateReplace
+          values: {}
+        kyverno:
+          enabled: false
+          git:
+            repo: https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/kyverno
+            path: "./chart"
+            tag: "2.1.3-bb.3"
+
+        logging:
+          enabled: false
+
+        eckoperator:
+          enabled: false
+
+        fluentbit:
+          # -- Toggle deployment of Fluent-Bit.
+          enabled: true
+          git:
+            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/fluentbit.git
+            path: "./chart"
+            tag: "0.19.16-bb.0"
+
+        promtail:
+          enabled: true
+          git:
+            repo: https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/promtail.git
+            path: "./chart"
+            tag: "3.8.1-bb.2"
+
+        loki:
+          enabled: true
+          git:
+            repo: https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/loki.git
+            path: "./chart"
+            tag: "2.5.1-bb.2"
+
+        monitoring:
+          enabled: true
+          git:
+            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/monitoring.git
+            path: "./chart"
+            tag: "23.1.6-bb.5"
+
+          # -- Flux reconciliation overrides specifically for the Monitoring Package
+          flux:
+            install:
+              crds: CreateReplace
+            upgrade:
+              crds: CreateReplace
+
+          ingress:
+            gateway: ""
+
+        twistlock:
+          enabled: false
+          authservice:
             enabled: false
-          grafana:
-            enabled: true
-          prometheus:
-            enabled: true
-        alertmanager:
-          enabled: false
-        grafana:
-          enabled: true
-        prometheus:
-          enabled: true
-          prometheusSpec:
-            resources:
-              limits:
-                cpu: 300m
-                memory: 300Mi
-              requests:
-                cpu: 200m
-                memory: 200Mi
-        prometheusOperator:
-          enabled: true
-          resources:
-            limits:
-              cpu: 200m
-              memory: 200Mi
-            requests:
-              cpu: 100m
-              memory: 100Mi
-        kubeEtcd:
-          enabled: false
-    gatekeeper:
-      enabled: false
-    jaeger:
-      enabled: false
-    kiali:
-      enabled: true
-      git:
-        repo: ${git_mirror_url}/kiali
-      values:
-        cr:
-          create: true
-    twistlock:
-      enabled: false
+          minioOperator:
+            enabled: false
+          minio:
+            enabled: false
+          gitlab:
+            enabled: false
+          gitlabRunner:
+            enabled: false
+          nexus:
+            enabled: false
+          sonarqube:
+            enabled: false
+          haproxy:
+            enabled: false
+          anchore:
+            enabled: false
+          mattermostoperator:
+            enabled: false
+          mattermost:
+            enabled: false
+          velero:
+            enabled: false
+          keycloak:
+            enabled: false
+          vault:
+            enabled: false
 EOF
 }
 

@@ -107,7 +107,7 @@ yum install git yum-utils -y
 # download pre-req RPMs
 
 mkdir -p ${artifact_dir}/rpms
-yumdownloader --resolve --destdir=${artifact_dir}/rpms/ container-selinux selinux-policy-base iscsi-initiator-utils
+yumdownloader --resolve --destdir=${artifact_dir}/rpms/ container-selinux selinux-policy-base iscsi-initiator-utils rsync
 
 # copy deployment scripts
 cp -rf destination-scripts ${artifact_dir}/deploy
