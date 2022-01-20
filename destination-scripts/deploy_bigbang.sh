@@ -81,7 +81,7 @@ spec:
         istio:
           enabled: true
           git:
-            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/istio-controlplane.git
+            repo: https://${git_mirror_url}/istio-controlplane.git
             path: "./chart"
             tag: "1.11.3-bb.1"
           ingressGateways:
@@ -103,14 +103,14 @@ spec:
         istiooperator:
           enabled: true
           git:
-            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/istio-operator.git
+            repo: https://${git_mirror_url}/istio-operator.git
             path: "./chart"
             tag: "1.11.3-bb.2"
 
         jaeger:
           enabled: true
           git:
-            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/jaeger.git
+            repo: https://${git_mirror_url}/jaeger.git
             path: "./chart"
             tag: "2.27.0-bb.2"
           flux:
@@ -124,7 +124,7 @@ spec:
         kiali:
           enabled: true
           git:
-            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/kiali.git
+            repo: https://${git_mirror_url}/kiali.git
             path: "./chart"
             tag: "1.44.0-bb.1"
 
@@ -136,14 +136,14 @@ spec:
         clusterAuditor:
           enabled: false
           git:
-            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/cluster-auditor.git
+            repo: https://${git_mirror_url}/cluster-auditor.git
             path: "./chart"
             tag: "1.0.2-bb.0"
 
         gatekeeper:
           enabled: false
           git:
-            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/policy.git
+            repo: https://${git_mirror_url}/policy.git
             path: "./chart"
             tag: "3.6.0-bb.2"
           flux:
@@ -155,7 +155,7 @@ spec:
         kyverno:
           enabled: false
           git:
-            repo: https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/kyverno
+            repo: https://${git_mirror_url}/kyverno.git
             path: "./chart"
             tag: "2.1.3-bb.3"
 
@@ -169,28 +169,28 @@ spec:
           # -- Toggle deployment of Fluent-Bit.
           enabled: true
           git:
-            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/fluentbit.git
+            repo: https://${git_mirror_url}/fluentbit.git
             path: "./chart"
             tag: "0.19.16-bb.0"
 
         promtail:
           enabled: true
           git:
-            repo: https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/promtail.git
+            repo: https://${git_mirror_url}/promtail.git
             path: "./chart"
             tag: "3.8.1-bb.2"
 
         loki:
           enabled: true
           git:
-            repo: https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/loki.git
+            repo: https://${git_mirror_url}/loki.git
             path: "./chart"
             tag: "2.5.1-bb.2"
 
         monitoring:
           enabled: true
           git:
-            repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/monitoring.git
+            repo: https://${git_mirror_url}/monitoring.git
             path: "./chart"
             tag: "23.1.6-bb.5"
 
