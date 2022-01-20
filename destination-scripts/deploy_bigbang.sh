@@ -21,7 +21,7 @@ fi
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 WAIT_TIMEOUT=120
 k3s_root_dir=/var/lib/rancher/k3s
-bigbang_version=1.25.0
+bigbang_version=1.25.1
 git_mirror_url=http://git-http-backend.git.svc.cluster.local/git
 artifact_dir="/opt/artifacts"
 
@@ -81,7 +81,7 @@ spec:
         istio:
           enabled: true
           git:
-            repo: https://${git_mirror_url}/istio-controlplane.git
+            repo: ${git_mirror_url}/istio-controlplane.git
             path: "./chart"
             tag: "1.11.3-bb.1"
           ingressGateways:
@@ -103,14 +103,14 @@ spec:
         istiooperator:
           enabled: true
           git:
-            repo: https://${git_mirror_url}/istio-operator.git
+            repo: ${git_mirror_url}/istio-operator.git
             path: "./chart"
             tag: "1.11.3-bb.2"
 
         jaeger:
           enabled: true
           git:
-            repo: https://${git_mirror_url}/jaeger.git
+            repo: ${git_mirror_url}/jaeger.git
             path: "./chart"
             tag: "2.27.0-bb.2"
           flux:
@@ -124,7 +124,7 @@ spec:
         kiali:
           enabled: true
           git:
-            repo: https://${git_mirror_url}/kiali.git
+            repo: ${git_mirror_url}/kiali.git
             path: "./chart"
             tag: "1.44.0-bb.1"
 
@@ -136,14 +136,14 @@ spec:
         clusterAuditor:
           enabled: false
           git:
-            repo: https://${git_mirror_url}/cluster-auditor.git
+            repo: ${git_mirror_url}/cluster-auditor.git
             path: "./chart"
             tag: "1.0.2-bb.0"
 
         gatekeeper:
           enabled: false
           git:
-            repo: https://${git_mirror_url}/policy.git
+            repo: ${git_mirror_url}/policy.git
             path: "./chart"
             tag: "3.6.0-bb.2"
           flux:
@@ -155,7 +155,7 @@ spec:
         kyverno:
           enabled: false
           git:
-            repo: https://${git_mirror_url}/kyverno.git
+            repo: ${git_mirror_url}/kyverno.git
             path: "./chart"
             tag: "2.1.3-bb.3"
 
@@ -169,28 +169,28 @@ spec:
           # -- Toggle deployment of Fluent-Bit.
           enabled: true
           git:
-            repo: https://${git_mirror_url}/fluentbit.git
+            repo: ${git_mirror_url}/fluentbit.git
             path: "./chart"
             tag: "0.19.16-bb.0"
 
         promtail:
           enabled: true
           git:
-            repo: https://${git_mirror_url}/promtail.git
+            repo: ${git_mirror_url}/promtail.git
             path: "./chart"
             tag: "3.8.1-bb.2"
 
         loki:
           enabled: true
           git:
-            repo: https://${git_mirror_url}/loki.git
+            repo: ${git_mirror_url}/loki.git
             path: "./chart"
             tag: "2.5.1-bb.2"
 
         monitoring:
           enabled: true
           git:
-            repo: https://${git_mirror_url}/monitoring.git
+            repo: ${git_mirror_url}/monitoring.git
             path: "./chart"
             tag: "23.1.6-bb.5"
 
